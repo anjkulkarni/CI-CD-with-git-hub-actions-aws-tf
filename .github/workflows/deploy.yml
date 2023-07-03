@@ -9,7 +9,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   TF_STATE_BUCKET_NAME: ${{ secrets.TF_STATE_BUCKET_NAME }}
   PRIVATE_SSH_KEY: ${{ secrets.AWS_SSH_KEY_PRIVATE }}
-  PUBLIC_SSH_KEY: ${{ secerts.AWS_SSH_KEY_PUBLIC }}
+  PUBLIC_SSH_KEY: ${{ secrets.AWS_SSH_KEY_PUBLIC }}
   AWS_REGION: us-west-2
 
 jobs:

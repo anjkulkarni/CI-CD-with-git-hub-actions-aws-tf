@@ -99,23 +99,26 @@ resource "aws_key_pair" "Deployer" {
 }
 
 resource "aws_security_group" "maingroup" {
-    egress = {
+    egress = [{
         cidr_blocks = ["0.0.0.0/0"]
         protocol = "-1"
         from_port = 0
         to_port = 0
+        self = false
 
-    }
+    }]
     ingress = [
         {cidr_blocks = ["0.0.0.0/0"]
         protocol = "tcp"
         from_port = 22
-        to_port = 22},
+        to_port = 22
+        self = false},
 
         {cidr_blocks = ["0.0.0.0/0"]
         protocol = "tcp"
         from_port = 80
-        to_port = 80}
+        to_port = 80
+        self = false}
     ]
      
   

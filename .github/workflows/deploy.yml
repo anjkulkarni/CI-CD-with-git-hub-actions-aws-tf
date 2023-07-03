@@ -23,7 +23,7 @@ jobs:
         with:
           terrform_wrapper: false
       - name: Terraform Init
-        run: terrform init -backend-config="bucket=$TF_STATE_BUCKET_NAME" -backend-config="region=us-west-2"
+        run: terraform init -backend-config="bucket=$TF_STATE_BUCKET_NAME" -backend-config="region=us-west-2"
         working-directory: ./terraform
       - name: Terraform Plan
         id: plan

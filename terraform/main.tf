@@ -19,7 +19,7 @@ provider "aws" {
 resource "aws_instance" "ec2-deployer" {
     ami = "ami-03f65b8614a860c29"
     instance_type = "t2.micro"
-    vpc_id = var.vpc_id
+    subnet_id = var.subnet-id
     key_name = aws_key_pair.Deployer.key_name
     vpc_security_group_ids = [aws_security_group.maingroup.id]
     iam_instance_profile = aws_iam_instance_profile.ec2-profile.name

@@ -99,6 +99,8 @@ resource "aws_key_pair" "Deployer" {
 }
 
 resource "aws_security_group" "maingroup" {
+    name = "ec2-sg"
+    vpc_id = var.vpc_id
     egress = [{
         cidr_blocks = ["0.0.0.0/0"]
         description = ""

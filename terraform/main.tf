@@ -101,6 +101,10 @@ resource "aws_key_pair" "Deployer" {
 resource "aws_security_group" "maingroup" {
     egress = [{
         cidr_blocks = ["0.0.0.0/0"]
+        description = ""
+        ipv6_cidr_blocks = []
+        prefix_list_ids = []
+        security_groups = []
         protocol = "-1"
         from_port = 0
         to_port = 0
@@ -109,12 +113,20 @@ resource "aws_security_group" "maingroup" {
     }]
     ingress = [
         {cidr_blocks = ["0.0.0.0/0"]
+        description = ""
+        ipv6_cidr_blocks = []
+        prefix_list_ids = []
+        security_groups = []
         protocol = "tcp"
         from_port = 22
         to_port = 22
         self = false},
 
         {cidr_blocks = ["0.0.0.0/0"]
+        description = ""
+        ipv6_cidr_blocks = []
+        prefix_list_ids = []
+        security_groups = []
         protocol = "tcp"
         from_port = 80
         to_port = 80

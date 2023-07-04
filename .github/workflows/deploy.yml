@@ -58,18 +58,21 @@ jobs:
       - name: set IP env var
         run: echo SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.SERVER_PUBLIC_IP }} >> $GITHUB_ENV
       - name: Login to ecr
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       - name: Docker build
         env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: nodeapp
           IMAGE_TAG: ${{ github.sha }}
           AWS_DEFAULT_REGION: us-west-2
         run: |-
-          docker build -t $REPOSITORY:$IMAGE_TAG .
-          docker push $REPOSITORY:$IMAGE_TAG
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         working-directory: ./nodeapp
       - name: Deploy image to ecr
         env: 
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: nodeapp
           IMAGE_TAG: ${{ github.sha }}
           AWS_DEFAULT_REGION: us-west-2
@@ -78,7 +81,7 @@ jobs:
           host: ${{ env.SERVER_PUBLIC_IP}}
           username: ubuntu
           key: ${{ env.PRIVATE_SSH_KEY }}
-          envs: PRIVATE_SSH_KEY,REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_SESSION_TOKEN,AWS_DEFAULT_REGION,AWS_REGION
+          envs: PRIVATE_SSH_KEY,REGISTRY,REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_SESSION_TOKEN,AWS_DEFAULT_REGION,AWS_REGION
           script: |-
             sudo apt update
             sudo apt install docker.io -y
@@ -86,5 +89,5 @@ jobs:
             sudo $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION);
             sudo docker stop myappcontainer || true
             sudo docker rm myappcontainer || true
-            sudo docker pull $REPOSITORY:$IMAGE_TAG
+            sudo docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
             sudo docker run -d --name myappcontainer -p 80:8080 $REPOSITORY:$IMAGE_TAG

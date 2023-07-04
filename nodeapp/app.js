@@ -1,10 +1,10 @@
-const express = require("express")
-const app = express()
+const express = require("express");
+const app = express();
 
 app.get("/",(req,res)=>{
-    res.send("Service is up & running")
-})
+    res.send("Service is up & running");
+});
 
 app.listen(8080,()=>{
-    console.log("Server is up")
+    console.log("Server is up");
 });

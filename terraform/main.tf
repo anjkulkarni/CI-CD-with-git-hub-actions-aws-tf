@@ -141,6 +141,7 @@ resource "aws_security_group" "maingroup" {
 
 output "instance_public_ip" {
     value = aws_instance.ec2-deployer.public_ip
+    type = number
     sensitive = true
   
 }

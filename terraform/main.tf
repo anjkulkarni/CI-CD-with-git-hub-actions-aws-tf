@@ -115,7 +115,7 @@ resource "aws_security_group" "maingroup" {
 
     }]
     ingress = [
-        {cidr_blocks = ["0.0.0.0/0"]
+        {cidr_blocks = ["0.0.0.0/0",]
         description = ""
         ipv6_cidr_blocks = []
         prefix_list_ids = []
@@ -125,7 +125,7 @@ resource "aws_security_group" "maingroup" {
         to_port = 22
         self = false},
 
-        {cidr_blocks = ["0.0.0.0/0"]
+        {cidr_blocks = ["0.0.0.0/0",]
         description = ""
         ipv6_cidr_blocks = []
         prefix_list_ids = []

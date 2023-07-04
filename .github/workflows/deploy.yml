@@ -61,7 +61,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
       - name: Docker build
         env:
-          REPOSITORY: node-app
+          REPOSITORY: nodeapp
           IMAGE_TAG: ${{ github.sha }}
           AWS_DEFAULT_REGION: us-west-2
         run: |-
@@ -70,7 +70,7 @@ jobs:
         working-directory: ./nodeapp
       - name: Deploy image to ecr
         env: 
-          REPOSITORY: node-app
+          REPOSITORY: nodeapp
           IMAGE_TAG: ${{ github.sha }}
           AWS_DEFAULT_REGION: us-west-2
         uses: appleboy/ssh-action@master

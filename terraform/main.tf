@@ -19,7 +19,6 @@ provider "aws" {
 resource "aws_instance" "ec2-deployer" {
     ami = "ami-03f65b8614a860c29"
     instance_type = "t2.micro"
-    subnet_id = var.subnet_id
     key_name = aws_key_pair.Deployer.key_name
     vpc_security_group_ids = [aws_security_group.maingroup.id]
     iam_instance_profile = aws_iam_instance_profile.ec2-profile.name
@@ -102,7 +101,7 @@ resource "aws_key_pair" "Deployer" {
 
 resource "aws_security_group" "maingroup" {
     name = "ec2-sg"
-    vpc_id = var.vpc_id
+    
     egress = [{
         cidr_blocks = ["0.0.0.0/0"]
         description = ""

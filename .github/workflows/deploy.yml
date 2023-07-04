@@ -1,4 +1,4 @@
-name: CI/CD with terraform
+name: CI/CD with Terraform
 on:
   push:
     branches:
@@ -16,21 +16,23 @@ jobs:
   deploy-infra:
     runs-on: ubuntu-latest
     outputs:
-      SERVER_PUBLIC_IP: ${{ steps.set-ip.outputs.instance_public_ip }}
+      SERVER_PUBLIC_IP: ${{ steps.set-ip.outputs.instance_public_ip}}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terrform_wrapper: false
-      - name: Terraform Init
+          terraform_wrapper: false
+      - name: Terraform init
+        id: init
         run: terraform init -backend-config="bucket=$TF_STATE_BUCKET_NAME" -backend-config="region=us-west-2"
         working-directory: ./terraform
       - name: Terraform Plan
         id: plan
         run: |-
           terraform plan \
+          -var="region=us-west-2" \
           -var="public_key=$PUBLIC_SSH_KEY" \
           -var="private_key=$PRIVATE_SSH_KEY" \
           -var="key_name=deployer-key" \
@@ -51,23 +53,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: set IP env var
+      - name: Set IP env variable
         run: echo SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.SERVER_PUBLIC_IP }} >> $GITHUB_ENV
-      - name: Login to ecr
+      - name: Login to AWS ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      - name: Docker build
+      - name: Build, push docker image
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: nodeapp
           IMAGE_TAG: ${{ github.sha }}
-          AWS_DEFAULT_REGION: us-west-2
         run: |-
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         working-directory: ./nodeapp
-      - name: Deploy image to ecr
-        env: 
+      - name: Deploy docker image to EC2
+        env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: nodeapp
           IMAGE_TAG: ${{ github.sha }}
@@ -82,7 +83,7 @@ jobs:
             sudo apt update
             sudo apt install docker.io -y
             sudo apt install awscli -y
-            sudo $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION);
+            sudo $(aws ecr get-login --no-include-email --region us-west-2);
             sudo docker stop myappcontainer || true
             sudo docker rm myappcontainer || true
             sudo docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG

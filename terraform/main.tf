@@ -30,7 +30,6 @@ resource "aws_instance" "ec2-deployer" {
       user = "ubuntu"
       private_key = var.parivate_key
       timeout = "4m"
-      port = 80
     }
     tags = {
       "name" = "DeployVm" 
